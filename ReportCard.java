@@ -12,13 +12,15 @@ public class ReportCard {
         BufferedReader myReader = null;
         Scanner scan = new Scanner(System.in);
         Student student = null;
-        BufferedWriter writer = null;
+
+
 
         System.out.println("Welcome to the Student Report Card Generator");
         System.out.println("--------------------------------------------\n");
 
         getFile(myReader, scan, students);
         assignment(scan, students);
+        output(scan, students);
 
 
     }
@@ -65,20 +67,43 @@ public class ReportCard {
             }
             if(!anotherAssignment(scan)){
                 System.out.print("\n Enter output directory: ");
-                output(scan, );
+                break;
             }
         }
     }
-    private static void output(Scanner scan, Map<String, Double> assignmentToGrade){
+    private static void output(Scanner scan, List<Student> students) {
         String filePath = scan.nextLine();
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-            for (Double i : assignmentToGrade.values()) {
-                writer.write(i);
+        BufferedWriter writer = null;
+        for (Student student : students) {
+            try {
+                File studentFile = new File(filePath + "\\" + student.getFirstName() + student.getLastName() + ".txt");
+                writer = new BufferedWriter(new FileWriter(studentFile));
+                writer.write(student.getFirstName() + " " + student.getLastName() + "\n");
+                for (String i : student.getAssignmentToGrade().keySet()) {
+
+                    writer.write(i + ": " + student.getAssignmentToGrade().get(i) + "%");
+                }
+
+            } catch (Exception e) {
+                System.out.println("error");
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (writer != null) {
+                        writer.close();
+                    }
+                } catch (Exception e) {
+                    System.out.println("error");
+                }
             }
-        } catch (Exception e) {
-            System.out.println("error");
         }
     }
-
+//    private static Double average(){
+//        double sum = 0;
+//        double mean = 0;
+//        for (Double total : grades) {
+//            sum += total;
+//            mean = sum/10;
+//        }
+//    }
 }

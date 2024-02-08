@@ -1,5 +1,6 @@
 import java.io.*;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +15,13 @@ public class ReportCard {
         Student student = null;
 
 
-
         System.out.println("Welcome to the Student Report Card Generator");
         System.out.println("--------------------------------------------\n");
 
         getFile(myReader, scan, students);
         assignment(scan, students);
         output(scan, students);
+        System.out.println("\nSuccessfully Generate Report Cards!");
 
 
     }
@@ -28,6 +29,7 @@ public class ReportCard {
     private static void getFile(BufferedReader myReader, Scanner scan, List<Student> students) {
         System.out.print("Enter the student file location: ");
         String file = scan.nextLine();
+//        if (file.isEmpty() || !file.)
         try {
             myReader = new BufferedReader(new FileReader(file));
             String fullName;
@@ -48,6 +50,7 @@ public class ReportCard {
             }
         }
     }
+
     private static boolean anotherAssignment(Scanner scan) {
         System.out.print("\nAnother assignment? (y/n): ");
         String result = scan.nextLine();
@@ -62,15 +65,21 @@ public class ReportCard {
             for (Student stud : students) {
                 System.out.print("Enter grade for " + stud.getFirstName() + " " + stud.getLastName() + ": ");
                 double grade = scan.nextDouble();
-                scan.nextLine();
-                stud.getAssignmentToGrade().put(assignmentName, grade);
+                if (grade >= 0 && grade <=100 ) {
+                    scan.nextLine();
+                    stud.getAssignmentToGrade().put(assignmentName, grade);
+                } else {
+                    System.out.println("Try again");
+                }
+
             }
-            if(!anotherAssignment(scan)){
+            if (!anotherAssignment(scan)) {
                 System.out.print("\n Enter output directory: ");
                 break;
             }
         }
     }
+
     private static void output(Scanner scan, List<Student> students) {
         String filePath = scan.nextLine();
         BufferedWriter writer = null;
@@ -79,9 +88,21 @@ public class ReportCard {
                 File studentFile = new File(filePath + "\\" + student.getFirstName() + student.getLastName() + ".txt");
                 writer = new BufferedWriter(new FileWriter(studentFile));
                 writer.write(student.getFirstName() + " " + student.getLastName() + "\n");
+                writer.write("\nAverage: " + average(student, student) + "\n");
+                if (average(student, student) < 100 & average(student, student) >= 90) {
+                    writer.write("Letter Grade: A \n");
+                } else if (average(student, student) < 90 && average(student, student) >= 80) {
+                    writer.write("Letter Grade: B \n");
+                } else if (average(student, student) < 80 && average(student, student) >= 70) {
+                    writer.write("Letter Grade: C \n");
+                }else if (average(student, student) < 70 && average(student, student) >= 60) {
+                    writer.write("Letter Grade: D \n");
+                } else {
+                    writer.write("Letter Grade: F \n");
+                }
+                writer.write("\n");
                 for (String i : student.getAssignmentToGrade().keySet()) {
-
-                    writer.write(i + ": " + student.getAssignmentToGrade().get(i) + "%");
+                    writer.write( i + ": " + student.getAssignmentToGrade().get(i) + "%\n");
                 }
 
             } catch (Exception e) {
@@ -98,12 +119,14 @@ public class ReportCard {
             }
         }
     }
-//    private static Double average(){
-//        double sum = 0;
-//        double mean = 0;
-//        for (Double total : grades) {
-//            sum += total;
-//            mean = sum/10;
-//        }
-//    }
+
+    private static Double average(Student student, Student students) {
+        double sum = 0;
+        double mean = 0;
+        for (Double i : student.getAssignmentToGrade().values()) {
+            sum += i;
+            mean = sum / students.getAssignmentToGrade().size();
+        }
+        return mean;
+    }
 }

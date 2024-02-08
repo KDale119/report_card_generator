@@ -47,7 +47,7 @@ public class ReportCard {
                 students.add(student);
                 System.out.println("Creating student " + student.getFirstName() + " " + student.getLastName());
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("error");
         } finally {
             try {
@@ -70,13 +70,16 @@ public class ReportCard {
             System.out.print("\nEnter the name of an Assignment: ");
             String assignmentName = scan.nextLine();
             for (Student stud : students) {
-                System.out.print("Enter grade for " + stud.getFirstName() + " " + stud.getLastName() + ": ");
-                double grade = scan.nextDouble();
-                if (grade >= 0 && grade <=100 ) {
+                while (true) {
+                    System.out.print("Enter grade for " + stud.getFirstName() + " " + stud.getLastName() + ": ");
+                    double grade = scan.nextDouble();
                     scan.nextLine();
-                    stud.getAssignmentToGrade().put(assignmentName, grade);
-                } else {
-                    System.out.println("Try again");
+                    if (grade >= 0 && grade <=100){
+                        stud.getAssignmentToGrade().put(assignmentName, grade);
+                        break;
+                    } else {
+                        System.out.println("Invalid grade. Try again");
+                    }
                 }
 
             }

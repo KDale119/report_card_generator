@@ -1,5 +1,7 @@
 import java.io.*;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,12 @@ public class ReportCard {
     private static void getFile(BufferedReader myReader, Scanner scan, List<Student> students) {
         System.out.print("Enter the student file location: ");
         String file = scan.nextLine();
-//        if (file.isEmpty() || !file.)
+        if (file.isEmpty() || !Files.exists(Paths.get(file))) {
+            System.out.println("\nInput file not found\n");
+            System.out.print("Enter the student file location: ");
+            file = scan.nextLine();
+            System.out.println("\n");
+        }
         try {
             myReader = new BufferedReader(new FileReader(file));
             String fullName;
@@ -40,7 +47,7 @@ public class ReportCard {
                 students.add(student);
                 System.out.println("Creating student " + student.getFirstName() + " " + student.getLastName());
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("error");
         } finally {
             try {

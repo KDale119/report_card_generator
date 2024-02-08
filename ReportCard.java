@@ -27,7 +27,6 @@ public class ReportCard {
 
 
     }
-
     private static void getFile(BufferedReader myReader, Scanner scan, List<Student> students) {
         System.out.print("Enter the student file location: ");
         String file = scan.nextLine();
